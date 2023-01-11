@@ -1,7 +1,7 @@
 const koa = require("koa")
 import koaRouter from "koa-router";
 const app = new koa();
-const { koaBody } = require('koa-body');
+const koaBodyParser = require("koa-bodyparser");
 import DB from "../repository/db.js";
 import dbConfig from "../repository/dbconfig.js";
 import ProductHandler from "./Handler";
@@ -24,23 +24,22 @@ export default class ProductService{
             this.serviceRouter.get("/",(ctx)=>{
                 ctx.body = "Welcome! This is default route."
             });
-            this.serviceRouter.post("/product",ctx=>{
-                console.log("here it is---"+ctx.request.body);
+            this.serviceRouter.post("/add/product",async (ctx)=>{
+                const result = await this.handler?.handleCreateRequest(ctx.request.body);
+                ctx.body = result;
             });
-            //this.handler?.handleCreateRequest(ctx);
+            
+            
         } catch (error) {
             console.log("An Error occured while starting the service" + error);
         }
         console.log("Service has been initialized!");
     }
     async startServer() {
-        app.use(koaBody());
+        app.use(koaBodyParser({
+            enableTypes:['json']
+        }))
         app.use(this.serviceRouter.routes());
-        app.use((ctx: { body: any; request: { body: any; }; }) => {
-            // the parsed body will store in ctx.request.body
-            // if nothing was parsed, body will be an empty object {}
-            ctx.body = ctx.request.body;
-          });
         app.listen(3000, () => {
             console.log("sever is started...")
         })

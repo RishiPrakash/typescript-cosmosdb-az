@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const koa = require("koa");
 const koa_router_1 = __importDefault(require("koa-router"));
 const app = new koa();
-const { koaBody } = require('koa-body');
+const koaBodyParser = require("koa-bodyparser");
 const db_js_1 = __importDefault(require("../repository/db.js"));
 const dbconfig_js_1 = __importDefault(require("../repository/dbconfig.js"));
 const Handler_1 = __importDefault(require("./Handler"));
@@ -26,10 +26,11 @@ class ProductService {
             this.serviceRouter.get("/", (ctx) => {
                 ctx.body = "Welcome! This is default route.";
             });
-            this.serviceRouter.post("/product", ctx => {
-                console.log("here it is---" + ctx.request.body);
+            this.serviceRouter.post("/add/product", async (ctx) => {
+                var _a;
+                const result = await ((_a = this.handler) === null || _a === void 0 ? void 0 : _a.handleCreateRequest(ctx.request.body));
+                ctx.body = result;
             });
-            //this.handler?.handleCreateRequest(ctx);
         }
         catch (error) {
             console.log("An Error occured while starting the service" + error);
@@ -37,13 +38,10 @@ class ProductService {
         console.log("Service has been initialized!");
     }
     async startServer() {
-        app.use(koaBody());
+        app.use(koaBodyParser({
+            enableTypes: ['json']
+        }));
         app.use(this.serviceRouter.routes());
-        app.use((ctx) => {
-            // the parsed body will store in ctx.request.body
-            // if nothing was parsed, body will be an empty object {}
-            ctx.body = ctx.request.body;
-        });
         app.listen(3000, () => {
             console.log("sever is started...");
         });

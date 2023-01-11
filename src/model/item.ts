@@ -1,6 +1,6 @@
 export default interface Item{
     //id of item
-    id: number;
+    id: string;
     //name of item
     name: string;
     //categoryName of item
