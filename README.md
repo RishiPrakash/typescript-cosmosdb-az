@@ -16,3 +16,6 @@ COSMOS_KEY=xx
 ```
 2. after this run command `npm install`
 3. after this run command `npm run start:dev`
+
+#### Reference 
+https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/quickstart-nodejs?wt.mc_id=cosmos-youtube-jopapa&tabs=azure-portal%2Clinux
